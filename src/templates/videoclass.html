@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<br>
+<br>
+<div class="container">
+    <center>
+        <h4>Emotions Detected</h4>
+    </center>
+
+    <div class="row" style="margin-bottom: 15px;">
+        <div class="col-sm-6">
+            <video id="vid" controls style="width: 90%;" name="{{ video }}">
+                <source src="/static/processedvids/{{ video }}.mkv" />
+            </video>
+            <script src="{{ url_for('static', filename='video.js') }}"></script>
+        </div>
+        <div class="col-sm-6">
+            <div id="chartContainer" style=" width: 90%;"></div>
+            <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+            <script>
+
+            </script>
+        </div>
+    </div>
+
+
+
+    <br>
+    <a href="/static/processedvids/{{ video }}.mkv">Download Processed Video</a><br>
+    <a href="/static/csvdata/{{ video }}.csv">Prediction Data</a>
+    <br><br> <br>
+    <div class="row">
+        <div class="col-sm-6">
+            <img class="graph" src="/static/graphs/Happy{{ video }}.png" alt="">
+        </div>
+        <div class="col-sm-6">
+            <img class="graph" src="/static/graphs/Disgusted{{ video }}.png" alt="">
+        </div>
+        <div class="col-sm-6">
+            <img class="graph" src="/static/graphs/Fearful{{ video }}.png" alt="">
+        </div>
+        <div class="col-sm-6">
+            <img class="graph" src="/static/graphs/Neutral{{ video }}.png" alt="">
+        </div>
+        <div class="col-sm-6">
+            <img class="graph" src="/static/graphs/Sad{{ video }}.png" alt="">
+        </div>
+        <div class="col-sm-6">
+            <img class="graph" src="/static/graphs/Surprised{{ video }}.png" alt="">
+        </div>
+        <div class="col-sm-6">
+            <img class="graph" src="/static/graphs/Angry{{ video }}.png" alt="">
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+</script>
+
+{% endblock %}

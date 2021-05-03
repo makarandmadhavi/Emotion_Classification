@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-5">
+            <form class="box" action="/uploadimage" method="POST" enctype="multipart/form-data">
+                <label for="imageupload">Try with images</label>
+                <div>
+                    <input type="file" name="imgfile" id="file" required>
+
+                </div>
+
+                <button style="margin-top: 20px;" class="btn btn-primary" type="submit">See emotions</button>
+            </form>
+
+            <br><br>
+            <form class="box" action="/uploadvideo" method="POST" enctype="multipart/form-data">
+                <label for="imageupload">Emotions from Video</label>
+                <div>
+                    <input type="file" name="vidfile" id="vidupload" required>
+                </div>
+
+                <button style="margin-top: 20px;" class="btn btn-primary" type="submit">Upload</button>
+            </form>
+            <br><br>
+            <form class="box" action="/livepage" method="GET">
+                <label for="live">Emotions from Live Stream</label>
+                <div class="form-group">
+                    <label for="Interval">Interval in seconds</label>
+                    <input type="number" class="form-control" name="live_interval" required id="live_interval" placeholder="1.0">
+                </div>
+                <button class="btn btn-primary" type="submit">Go Live</button>
+            </form>
+        </div>
+        <div class="col-sm-7">
+            <div class="box">
+                <h5>Uploaded Videos</h5>
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Select video to process</label>
+                    <select class="form-control" id="toprocess">
+                        {% for video in uploadedvids %}
+                        <option> {{ video }} </option>
+                        {% endfor %}
+                    </select>  
+                </div>
+                <div class="form-group">
+                    <label for="Interval">Interval in seconds</label>
+                    <input type="number" class="form-control" required id="interval" placeholder="1.0">
+                </div>
+                <button onclick="sendtoprocess()" class="btn btn-success">Process Video</button>
+            </div>
+            <div class="box">
+                <h5>Queue</h5>
+                <div class="form-group">
+                    <ul>
+                        {% for item in queue %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="box">
+                <h5>Results</h5>
+                <form action="/videoclass" method="get">
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Processed videos</label>
+                    <select class="form-control" name="video" id="processed">
+                        {% for video in processedvids %}
+                        <option> {{ video }} </option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <button type="submit" value="submit" class="btn btn-success">View Results</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

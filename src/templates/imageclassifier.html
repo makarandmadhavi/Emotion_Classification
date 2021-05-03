@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<br>
+<div class="container">
+    <center>
+        <h4>Emotions Detected</h4>
+    </center>
+    <div class="row">
+        <div class="col-sm-6">
+            <img width="500px" src="/static/predict/{{ filename }}" alt="">
+
+        </div>
+        <div class="col-sm-6">
+            <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+            <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    window.onload = function () {
+        
+    var chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+        
+        title:{
+            text:"Summary"
+        },
+        axisX:{
+            interval: 1
+        },
+        axisY2:{
+            interlacedColor: "rgba(1,77,101,.2)",
+            gridColor: "rgba(1,77,101,.1)",
+            title: "Weights"
+        },
+        data: [{
+            type: "bar",
+            name: "companies",
+            axisYType: "secondary",
+            color: "#014D65",
+            dataPoints: [
+                { y: {{ prediction[0] }}, label: "Angry" },
+                { y: {{ prediction[1] }}, label: "Disgusted" },
+                { y: {{ prediction[2] }}, label: "Fearful" },
+                { y: {{ prediction[3] }}, label: "Happy" },
+                { y: {{ prediction[4] }}, label: "Neutral" },
+                { y: {{ prediction[5] }}, label: "Sad" },
+                { y: {{ prediction[6] }}, label: "Surprised" }
+                
+            ]
+        }]
+    });
+    chart.render();
+    
+    }
+    </script>
+
+{% endblock %}

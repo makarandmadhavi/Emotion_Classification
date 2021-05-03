@@ -1,0 +1,15 @@
+.box {
+    margin-top: 20px;
+    background-color: #fff;
+    -webkit-box-shadow: 10px 10px 41px -4px rgba(0, 0, 0, 0.21);
+    -moz-box-shadow: 10px 10px 41px -4px rgba(0, 0, 0, 0.21);
+    box-shadow: 10px 10px 41px -4px rgba(0, 0, 0, 0.21);
+    /* max-width: 1000px; */
+    border-radius: 8px;
+    padding: 10px;
+    position: relative;
+}
+
+.graph {
+    width: 500px;
+}
