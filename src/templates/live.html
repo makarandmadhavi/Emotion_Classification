@@ -2,14 +2,19 @@
 
 {% block body %}
 <br>
-<div class="container" >
+<div class="container">
     <center>
         <h4>Emotions Detected</h4>
     </center>
     <div class="row">
         <div class="col-md-6">
             <br>
-            <p>Live Feed</p>
+            
+            <div class="form-inline">
+                <h5>Live Feed</h5>
+                <button class="btn btn-info" onclick="camera()">Camera</button>
+                <button class="btn btn-info" onclick="screencap()">Screen Capture</button>
+            </div>
             <video id="video" style="width:100%;" autoplay></video>
             <br>
             <label for="Interval">Interval in seconds</label>
@@ -17,7 +22,18 @@
                 <div class="form-group">
                     <input type="number" class="form-control" name="live_interval" required id="live_interval"
                         value="{{ interval }}">
-                    <button class="btn btn-primary" onclick="changeInterval(live_interval.value)">Change</button>
+                </div>
+            </div>
+            <label for="Interval">Session Name</label>
+            <div class="form-inline">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="name" required id="name">
+                        
+                </div>
+            </div>
+            <br>
+            <div class="form-inline">
+                <div class="form-group">
                     <button class="btn btn-success" onclick="start()">Start</button>
                     <button class="btn btn-danger" onclick="stop()">Stop</button>
                 </div>
@@ -32,6 +48,12 @@
     </div>
 
 </div>
+<div hidden>
+    <strong>Log:</strong>
+    <br>
+    <pre id="log"></pre>
+</div>
+
 <script src="{{ url_for('static', filename='live.js') }}"></script>
 
 {% endblock %}

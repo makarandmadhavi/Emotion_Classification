@@ -73,5 +73,5 @@ function drawGraph(data) {
 }
 
 window.onload = function () {
-    setInterval(showGraph, 200);
+    setInterval(showGraph, 300);
 }

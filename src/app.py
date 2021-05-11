@@ -9,12 +9,24 @@ from processvideo import predict_video
 import pandas as pd
 import json
 import base64
+from graph import plotgraphs
 
 app = Flask(__name__)
 app.debug = False
 CORS(app)
 app.config['UPLOAD_IMG'] = "uploads" 
 app.config['UPLOAD_VIDEO'] = "videos" 
+
+live = "live"
+interval = 1
+
+videoname = os.path.join("static","processedvids",live+".mp4")
+csvname = os.path.join("static","csvdata",live+".csv")
+df = pd.DataFrame([], columns = ['Timestamp', 'Angry',"Disgusted","Fearful","Happy","Neutral","Sad","Surprised","interval"])
+emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
+fourcc = cv2.VideoWriter_fourcc(*'X264')
+out = None
+
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -28,7 +40,8 @@ def index():
             processedvids.append(file[:-4])
     queue = [] + uploadedvideos
     for vid in processedvids:
-        queue.remove(vid)
+        if vid in queue:
+            queue.remove(vid)
     return render_template('index.html',uploadedvids=uploadedvideos,queue=queue,processedvids=processedvids)
 
 @app.route('/uploadimage', methods = ['GET', 'POST'])
@@ -83,10 +96,8 @@ def csv_video():
 
 @app.route('/livepage', methods = ['GET'])
 def livepage():
-    interval = float(request.args['live_interval'])
-    print("live interval:",interval)
     prediction = [0,0,0,0,0,0,0]
-    return render_template('live.html',prediction=prediction,interval=interval)
+    return render_template('live.html',prediction=prediction)
 
 @app.route('/uploadlive', methods = ['POST'])
 def uploadlive():
@@ -99,7 +110,11 @@ def uploadlive():
         prediction, img = predictemotion(img)
         cv2.imwrite(os.path.join("static/predict/" , filename), img)
         prediction = prediction.sum(axis=0)
-        return {"preds":tuple(prediction)}
+        pred = tuple(prediction)
+        out.write(img)
+        global df
+        df.loc[len(df.index)] = [len(df.index), pred[0],pred[1],pred[2],pred[3],pred[4],pred[5],pred[6],interval] 
+        return {"preds":pred}
     else:
         return "nope"
 
@@ -108,7 +123,31 @@ def get_live_image():
     filename = os.path.join("static/predict/" , 'live.png')
     return send_file(filename, mimetype='image/png')
 
+@app.route('/start_live_video', methods = ['POST'])
+def start_live():
+    width = request.json['width']
+    height = request.json['height']
+    fps = request.json['fps']
+    global out
+    global live
+    global videoname
+    global csvname
+    global interval
+    interval = 1.0/fps
+    live = request.json['live']
+    videoname = os.path.join("static","processedvids",live+".mkv")
+    csvname = os.path.join("static","csvdata",live+".csv")
+    out = cv2.VideoWriter(videoname, fourcc, fps, (width,  height))
+    return "works"
+
+@app.route('/stop_live_video', methods = ['POST'])
+def stop_live():
+    df.to_csv(csvname)
+    out.release()
+    plotgraphs(str(live)+'.csv')
+    return "works"
 
 if __name__ == '__main__':
-    app.debug = True
+    app.debug = False
+    app.templates_auto_reload = False
     app.run()

@@ -25,7 +25,7 @@ def predict_video(video,filename,videoname,csvname,interval):
   width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)  ) # float
   height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
   print(width,height)
-  size=(width,height)
+  #size=(width,height)
   fourcc = cv2.VideoWriter_fourcc(*'X264')
   out = cv2.VideoWriter(videoname, fourcc, fps, (width,  height))
   while(cap.isOpened()):

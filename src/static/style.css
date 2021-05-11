@@ -13,3 +13,7 @@
 .graph {
     width: 500px;
 }
+
+.btn {
+    margin: 5px !important;
+}

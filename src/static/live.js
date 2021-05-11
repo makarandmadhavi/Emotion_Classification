@@ -1,36 +1,97 @@
 var video = document.getElementById('video');
+const logElem = document.getElementById("log");
 var canvas = document.createElement("CANVAS");
 var context = canvas.getContext('2d');
 
 var interval = 1;
 var emotionsinterval;
-// Get access to the camera!
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+
+function camera() {
+    // Get access to the camera!
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     // Not adding `{ audio: true }` since we only want video now
-    navigator.mediaDevices.getUserMedia({
-        video: true
-    }).then(function (stream) {
+        navigator.mediaDevices.getUserMedia({
+            video: true
+        }).then(function (stream) {
         //video.src = window.URL.createObjectURL(stream);
-        video.srcObject = stream;
-        video.play();
-    });
+            video.srcObject = stream;
+            video.play();
+        });
+    }
+}
+
+function startCapture(displayMediaOptions) {
+    let captureStream = null;
+   
+    return navigator.mediaDevices.getDisplayMedia(displayMediaOptions)
+       .catch(err => { console.error("Error:" + err); return null; });
+}
+
+var displayMediaOptions = {
+    video: {
+      cursor: "always"
+    },
+    audio: false
+};
+
+async function screencap() {
+    logElem.innerHTML = "";
+  
+    try {
+      video.srcObject = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
+      dumpOptionsInfo();
+    } catch(err) {
+      console.error("Error: " + err);
+    }
+}
+
+function stopCapture(evt) {
+    let tracks = video.srcObject.getTracks();
+  
+    tracks.forEach(track => track.stop());
+    video.srcObject = null;
 }
 
 function start() {
     interval = document.getElementById("live_interval").value;
     console.log(interval);
-    emotionsinterval = setInterval(getEmotions,interval*1000);
+    let width  = video.clientWidth;
+    let height = video.clientHeight;
+    let live = document.getElementById("name").value;
+    let fps =  1.0/interval;
+    $.ajax({
+        type: "POST",
+        url: "/start_live_video",
+        processData: false,
+        contentType: "application/json",
+        data: JSON.stringify( {
+            width,
+            height,
+            live,
+            fps
+        }),
+        success: function (data) {
+            console.log(data); 
+            emotionsinterval = setInterval(getEmotions,interval*1000);
+        }
+    });
 }
 
-function stop(l) {
+function stop() {
     clearInterval(emotionsinterval);
+    $.ajax({
+        type: "POST",
+        url: "/stop_live_video",
+        processData: false,
+        contentType: "application/json",
+        data: null,
+        success: function (data) {
+            console.log(data); 
+            window.location ='videoclass?video='+document.getElementById("name").value;
+        }
+    });
 }
 
-function changeInterval(liveval) {
-    interval = liveval;
-    clearInterval(emotionsinterval);
-    emotionsinterval = setInterval(getEmotions,interval*1000);
-}
 
 function dataURItoBlob(dataURI) {
     var byteString = atob(dataURI.split(',')[1]);
@@ -130,8 +191,13 @@ function graph(preds) {
     chart.render();
 }
 
-graph([0,0,0,0,0,0,0])
+load();
 
+function load() {
+    let dt = new Date().toISOString().replace(/:/g,'-').replace('.','');
+    document.getElementById("name").value = dt;
+    graph([0,0,0,0,0,0,0])
+}
 
 
 
