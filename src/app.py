@@ -138,14 +138,14 @@ def start_live():
     videoname = os.path.join("static","processedvids",live+".mkv")
     csvname = os.path.join("static","csvdata",live+".csv")
     out = cv2.VideoWriter(videoname, fourcc, fps, (width,  height))
-    return "works"
+    return "Recording Started"
 
 @app.route('/stop_live_video', methods = ['POST'])
 def stop_live():
     df.to_csv(csvname)
     out.release()
     plotgraphs(str(live)+'.csv')
-    return "works"
+    return "Recording Ended"
 
 if __name__ == '__main__':
     app.debug = False

@@ -39,7 +39,7 @@ async function screencap() {
   
     try {
       video.srcObject = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
-      dumpOptionsInfo();
+      //dumpOptionsInfo();
     } catch(err) {
       console.error("Error: " + err);
     }
