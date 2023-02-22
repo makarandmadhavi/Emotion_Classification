@@ -31,10 +31,14 @@ out = None
 @app.route('/', methods=['POST', 'GET'])
 def index():
     uploadedvideos = []
+    if not os.path.exists("videos"):
+        os.makedirs("videos")
     for file in os.listdir("videos"):
         if file.endswith(".mp4"):
             uploadedvideos.append(file[:-4])
     processedvids = []
+    if not os.path.exists(os.path.join("static","csvdata")):
+        os.makedirs(os.path.join("static","csvdata"))
     for file in os.listdir(os.path.join("static","csvdata")):
         if file.endswith(".csv"):
             processedvids.append(file[:-4])
@@ -105,6 +109,10 @@ def uploadlive():
         f = request.files['imgBase64']
         print(f);
         filename = secure_filename(f.filename)
+        if not os.path.exists(os.path.join(app.config['UPLOAD_IMG'],filename)):
+            os.makedirs(os.path.join(app.config['UPLOAD_IMG']))
+            file = open(os.path.join(app.config['UPLOAD_IMG'],filename), 'w+')
+            file.close()
         f.save(os.path.join(app.config['UPLOAD_IMG'],filename))
         img = cv2.imread('uploads/'+filename)
         prediction, img = predictemotion(img)

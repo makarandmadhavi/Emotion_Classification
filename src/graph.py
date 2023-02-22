@@ -1,11 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+plt.switch_backend('Agg')
 
 
 def plotgraphs(filename):
     df = pd.read_csv("static/csvdata/"+filename)
     filename = filename[:-4]
     df['Timestamp'] = df['Timestamp'].div(60)
+    
 
     plt.plot('Timestamp','Angry', color="red", data=df)
     lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
